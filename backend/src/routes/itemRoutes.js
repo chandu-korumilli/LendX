@@ -1,16 +1,31 @@
 
 import express from "express";
 
-import { createItem, getAll } from "../controllers/itemController.js";
+import {
+    createItem,
+    getAllItems,
+    getItemById,
+    updateItem,
+    deleteItem
+} from "../controllers/itemController.js";
+
 import { protect } from "../middleware/authMiddleware.js";
-import { validateQuery } from "../middleware/validate.js";
-import { itemSearchSchema } from "../validators/itemValidator.js";
 
 const router = express.Router();
 
-// Create a new item (only logged-in users)
+// Create a new item
 router.post("/", protect, createItem);
-router.get("/search", validateQuery(itemSearchSchema), getAll);
-router.get("/", validateQuery(itemSearchSchema), getAll);
+
+// Get all active items (with optional filters)
+router.get("/", getAllItems);
+
+// Get a single item by ID
+router.get("/:id", getItemById);
+
+// Update an item
+router.put("/:id", protect, updateItem);
+
+// Delete an item
+router.delete("/:id", protect, deleteItem);
 
 export default router;
