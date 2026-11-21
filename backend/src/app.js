@@ -20,9 +20,30 @@ const app = express();
 // Security
 app.use(helmet());
 
-// CORS
+// Allowed frontend origins
+const allowedOrigins = [
+    process.env.CLIENT_URL,
+    "https://lend-x-cfh2.vercel.app",
+    "https://lend-x-cfh2-git-main-lend-x.vercel.app",
+    "http://localhost:5173"
+].filter(Boolean);
+
+// CORS configuration
 app.use(cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173"
+    origin: (origin, callback) => {
+        if (
+            !origin ||
+            allowedOrigins.includes(origin) ||
+            origin.endsWith(".vercel.app")
+        ) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
 }));
 
 // Logger
@@ -44,7 +65,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/items", itemRoutes);
 
 // Public booking test route
-// IMPORTANT: This must come before bookingRoutes.
 app.get("/api/bookings/test", (req, res) => {
     res.status(200).json({
         success: true,
