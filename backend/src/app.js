@@ -20,31 +20,40 @@ const app = express();
 // Security
 app.use(helmet());
 
-// Allowed frontend origins
-const allowedOrigins = [
-    process.env.CLIENT_URL,
+// Allowed frontend origins & patterns
+const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, "") : null;
+const staticAllowedOrigins = [
+    clientUrl,
     "https://lend-x-cfh2.vercel.app",
-    "https://lend-x-cfh2-git-main-lend-x.vercel.app",
-    "http://localhost:5173"
+    "https://lend-x-cfh2-git-main-lend-x.vercel.app"
 ].filter(Boolean);
 
+const isAllowedOrigin = (origin) => {
+    if (!origin) return true;
+    const cleanOrigin = origin.replace(/\/$/, "");
+    if (staticAllowedOrigins.includes(cleanOrigin)) return true;
+    // Allow any localhost or 127.0.0.1 with any port
+    if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(cleanOrigin)) return true;
+    // Allow any Vercel deployment preview / production domain
+    if (/^https:\/\/[a-zA-Z0-9_-]+\.vercel\.app$/.test(cleanOrigin)) return true;
+    return false;
+};
+
 // CORS configuration
-app.use(cors({
+const corsOptions = {
     origin: (origin, callback) => {
-        if (
-            !origin ||
-            allowedOrigins.includes(origin) ||
-            origin.endsWith(".vercel.app")
-        ) {
+        if (isAllowedOrigin(origin)) {
             callback(null, true);
         } else {
-            callback(new Error("Not allowed by CORS"));
+            callback(null, false);
         }
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Logger
 app.use(morgan("dev"));

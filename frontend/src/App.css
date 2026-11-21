@@ -131,7 +131,8 @@
 }
 
 .hero-tag,
-.section-tag {
+.section-tag,
+.section-label {
   display: inline-block;
   color: var(--primary);
   font-size: 12px;
@@ -318,11 +319,12 @@
 
 /* COMMON SECTION */
 
+.section,
 .section-container {
   width: 100%;
   max-width: 1440px;
   margin: auto;
-  padding: 95px 8%;
+  padding: 60px 8%;
 }
 
 .section-heading {
@@ -812,4 +814,209 @@
   .footer-bottom {
     flex-direction: column;
   }
+}
+
+/* EXPLORE PAGE SEARCH & GRID */
+
+.explore-search {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0 32px;
+  flex-wrap: wrap;
+}
+
+.explore-search input {
+  flex: 1;
+  min-width: 240px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--navy);
+  font-size: 14px;
+}
+
+.explore-search select {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: white;
+  color: var(--navy);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.explore-search button[type="submit"] {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 9px;
+  padding: 12px 24px;
+  font-weight: 700;
+  transition: 0.2s;
+}
+
+.explore-search button[type="submit"]:hover {
+  background: var(--primary-dark);
+}
+
+.explore-search button[type="button"] {
+  background: white;
+  color: var(--navy);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 12px 20px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.explore-search button[type="button"]:hover {
+  background: var(--light-bg);
+}
+
+.explore-results {
+  margin-bottom: 24px;
+}
+
+.explore-results h3 {
+  color: var(--navy);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.featured-items-grid,
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 992px) {
+  .featured-items-grid,
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .featured-items-grid,
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* AUTH & FORM STYLES */
+
+.auth-page {
+  min-height: calc(100vh - 78px - 100px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 20px;
+  background: var(--light-bg);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px 32px;
+  box-shadow: 0 10px 25px rgba(30, 64, 120, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-card h1,
+.auth-card h2,
+.auth-card h3 {
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+
+.auth-card p {
+  color: var(--text);
+  font-size: 14px;
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+.auth-card label {
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 12px 0 6px;
+  display: block;
+}
+
+.auth-card input,
+.auth-card select,
+.auth-card textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  font-size: 14px;
+  background: #ffffff;
+  color: var(--navy);
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.auth-card input:focus,
+.auth-card select:focus,
+.auth-card textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.auth-card button[type="submit"] {
+  margin-top: 24px;
+  padding: 14px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.auth-card button[type="submit"]:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+.auth-card button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.auth-card a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.auth-card a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin: 10px 0;
+}
+
+.success-message {
+  color: #16a34a;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin: 10px 0;
 }

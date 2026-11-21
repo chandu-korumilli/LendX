@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ItemCard from "../components/ItemCard";
 import { useAuth } from "../context/AuthContext.jsx";
-
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import { getItems } from "../services/itemService";
 
 function Home() {
   const navigate = useNavigate();
@@ -65,15 +63,7 @@ function Home() {
         setLoading(true);
         setError("");
 
-        const response = await fetch(`${API_URL}/items`);
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(
-            result.message || "Unable to load items"
-          );
-        }
-
+        const result = await getItems();
         const fetchedItems =
           result?.data?.items ||
           result?.items ||

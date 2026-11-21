@@ -2,10 +2,33 @@ import Item from "../validators/models/Item.js";
 
 // Create a new item listing
 export const createItem = async (userId, itemData) => {
+    const payload = { ...itemData };
+
+    // Support both price and pricePerDay
+    if (payload.pricePerDay === undefined && payload.price !== undefined) {
+        payload.pricePerDay = Number(payload.price);
+    } else if (payload.pricePerDay !== undefined) {
+        payload.pricePerDay = Number(payload.pricePerDay);
+    }
+
+    // Support image string or images array
+    if ((!payload.images || payload.images.length === 0) && payload.image) {
+        payload.images = [payload.image];
+    }
+
+    // Default condition if missing
+    if (!payload.condition) {
+        payload.condition = "good";
+    }
+
+    // Default address if missing
+    if (!payload.address) {
+        payload.address = "Location not specified";
+    }
 
     const item = await Item.create({
         owner: userId,
-        ...itemData
+        ...payload
     });
 
     return item;
@@ -42,10 +65,21 @@ export const getItemById = async (itemId) => {
 
 // Update an item
 export const updateItem = async (itemId, userId, updateData) => {
+    const payload = { ...updateData };
+
+    if (payload.pricePerDay === undefined && payload.price !== undefined) {
+        payload.pricePerDay = Number(payload.price);
+    } else if (payload.pricePerDay !== undefined) {
+        payload.pricePerDay = Number(payload.pricePerDay);
+    }
+
+    if ((!payload.images || payload.images.length === 0) && payload.image) {
+        payload.images = [payload.image];
+    }
 
     const item = await Item.findOneAndUpdate(
         { _id: itemId, owner: userId },
-        updateData,
+        payload,
         { new: true, runValidators: true }
     );
 

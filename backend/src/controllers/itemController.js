@@ -1,5 +1,5 @@
 
-import * as itemService from "../services/itemservices.js";
+import * as itemService from "../services/itemService.js";
 import catchAsync from "../utils/catchAsync.js";
 
 // Create a new item

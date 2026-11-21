@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -47,35 +47,38 @@ function MyBookings() {
 
   const currentUserId = getCurrentUserId();
 
-  // Load bookings
-  const loadBookings = async () => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await getMyBookings();
-
-      const bookingList =
-        response?.data?.bookings ||
-        response?.bookings ||
-        [];
-
-      setBookings(bookingList);
-
-    } catch (err) {
-      setError(err.message || "Unable to load bookings");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    let ignore = false;
+
     if (!localStorage.getItem("token")) {
       navigate("/login");
       return;
     }
 
-    loadBookings();
+    getMyBookings()
+      .then((response) => {
+        if (!ignore) {
+          const bookingList =
+            response?.data?.bookings ||
+            response?.bookings ||
+            [];
+          setBookings(bookingList);
+        }
+      })
+      .catch((err) => {
+        if (!ignore) {
+          setError(err.message || "Unable to load bookings");
+        }
+      })
+      .finally(() => {
+        if (!ignore) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
   }, [navigate]);
 
   // Approve or reject booking

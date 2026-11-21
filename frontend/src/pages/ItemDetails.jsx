@@ -1,12 +1,14 @@
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getItemById } from "../services/itemService";
 import { createBooking } from "../services/bookingService";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function ItemDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -130,6 +132,9 @@ function ItemDetails() {
   const price = item.pricePerDay ?? item.price ?? 0;
   const deposit = item.securityDeposit ?? 0;
   const owner = item.owner || {};
+  const currentUserId = user?._id || user?.id;
+  const ownerId = owner?._id || owner?.id || (typeof owner === "string" ? owner : null);
+  const isOwner = Boolean(currentUserId && ownerId && String(currentUserId) === String(ownerId));
 
   return (
     <div className="section item-details-page">
@@ -256,11 +261,18 @@ function ItemDetails() {
               </div>
             )}
 
+            {isOwner && (
+              <p className="error-message" style={{ background: "#eff6ff", borderColor: "#bfdbfe", color: "#1d4ed8" }}>
+                You are the owner of this item.
+              </p>
+            )}
+
             <button
               className="signup-btn"
               onClick={handleBooking}
               disabled={
                 bookingLoading ||
+                isOwner ||
                 item.isAvailable === false ||
                 !startDate ||
                 !endDate ||
@@ -269,7 +281,9 @@ function ItemDetails() {
             >
               {bookingLoading
                 ? "Submitting..."
-                : "Request Booking"}
+                : isOwner
+                  ? "Your Item"
+                  : "Request Booking"}
             </button>
 
             {message && (
