@@ -1,0 +1,238 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  font-family: 'DM Sans', sans-serif;
+  color: #172b4d;
+  background: #ffffff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #ffffff;
+  color: #172b4d;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ITEM DETAILS PAGE */
+
+.item-details-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.details-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 45px;
+  align-items: start;
+  margin-top: 30px;
+}
+
+.details-image {
+  width: 100%;
+  min-height: 400px;
+  background: #f3f4f6;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.details-image img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+.details-image .item-no-image {
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 55px;
+  color: #64748b;
+}
+
+.details-content h2 {
+  font-size: 34px;
+  margin: 15px 0;
+  color: #172033;
+}
+
+.details-price {
+  font-size: 28px;
+  color: #2563eb;
+  margin: 15px 0;
+}
+
+.details-price small {
+  font-size: 15px;
+  color: #64748b;
+}
+
+.details-description {
+  color: #64748b;
+  line-height: 1.7;
+  margin: 20px 0;
+}
+
+.details-information {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  padding: 22px;
+  background: #f8fafc;
+  border-radius: 12px;
+  margin: 25px 0;
+}
+
+.details-information div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.details-information strong {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.details-information span {
+  color: #172033;
+  font-weight: 600;
+}
+
+.item-details-page button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .details-layout {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .details-image,
+  .details-image img,
+  .details-image .item-no-image {
+    min-height: 280px;
+    height: 280px;
+  }
+
+  .details-content h2 {
+    font-size: 26px;
+  }
+
+  .details-information {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* BOOKING FORM */
+
+.booking-form {
+  margin-top: 30px;
+  padding: 24px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+.booking-form h3 {
+  margin: 0 0 20px;
+  color: #172033;
+  font-size: 22px;
+}
+
+.booking-form label {
+  display: block;
+  margin: 15px 0 8px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.booking-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 15px;
+  background: white;
+  box-sizing: border-box;
+}
+
+.booking-form input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.booking-summary {
+  margin-top: 22px;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
+}
+
+.booking-summary div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: #475569;
+}
+
+.booking-summary strong {
+  color: #172033;
+}
+
+.booking-summary .booking-total {
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
+  margin-bottom: 0;
+  font-size: 17px;
+  color: #172033;
+}

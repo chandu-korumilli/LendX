@@ -1,3 +1,4 @@
+
 import Booking from "../validators/models/Booking.js";
 import Item from "../validators/models/Item.js";
 
@@ -10,6 +11,7 @@ const createHttpError = (statusCode, message) => {
     return error;
 };
 
+// Create booking request
 export const createBookingRequest = async (borrowerId, {
     itemId,
     startDate,
@@ -31,6 +33,7 @@ export const createBookingRequest = async (borrowerId, {
 
     const bookingStart = new Date(startDate);
     const bookingEnd = new Date(endDate);
+
     const totalDays = Math.ceil(
         (bookingEnd.getTime() - bookingStart.getTime()) / millisecondsPerDay
     );
@@ -43,7 +46,10 @@ export const createBookingRequest = async (borrowerId, {
     });
 
     if (overlappingBooking) {
-        throw createHttpError(409, "The item already has a booking during those dates");
+        throw createHttpError(
+            409,
+            "The item already has a booking during those dates"
+        );
     }
 
     const booking = await Booking.create({
@@ -66,10 +72,74 @@ export const createBookingRequest = async (borrowerId, {
     ]);
 };
 
-export const getUserBookings = async (userId) => Booking.find({
-    $or: [{ borrower: userId }, { lender: userId }]
-})
-    .populate("item", "title category images pricePerDay securityDeposit")
-    .populate("borrower", "name")
-    .populate("lender", "name")
-    .sort({ createdAt: -1 });
+// Get bookings made and received by the user
+export const getUserBookings = async (userId) => {
+    return Booking.find({
+        $or: [
+            { borrower: userId },
+            { lender: userId }
+        ]
+    })
+        .populate("item", "title category images pricePerDay securityDeposit")
+        .populate("borrower", "name")
+        .populate("lender", "name")
+        .sort({ createdAt: -1 });
+};
+
+// Approve or reject a booking request
+export const updateBookingStatus = async (
+    bookingId,
+    lenderId,
+    newStatus
+) => {
+    if (!["approved", "rejected"].includes(newStatus)) {
+        throw createHttpError(400, "Invalid booking status");
+    }
+
+    const booking = await Booking.findOne({
+        _id: bookingId,
+        lender: lenderId
+    });
+
+    if (!booking) {
+        throw createHttpError(
+            404,
+            "Booking not found or you are not the item owner"
+        );
+    }
+
+    if (booking.status !== "pending") {
+        throw createHttpError(
+            409,
+            "Only pending bookings can be updated"
+        );
+    }
+
+    // Update only if the booking is still pending
+    const updatedBooking = await Booking.findOneAndUpdate(
+        {
+            _id: bookingId,
+            lender: lenderId,
+            status: "pending"
+        },
+        {
+            $set: { status: newStatus }
+        },
+        {
+            new: true,
+            runValidators: true
+        }
+    )
+        .populate("item", "title category images pricePerDay securityDeposit")
+        .populate("borrower", "name")
+        .populate("lender", "name");
+
+    if (!updatedBooking) {
+        throw createHttpError(
+            409,
+            "This booking has already been updated"
+        );
+    }
+
+    return updatedBooking;
+};

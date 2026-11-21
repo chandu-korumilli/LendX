@@ -4,21 +4,18 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 
+// Import routes
 import authRoutes from "./routes/authRoutes.js";
 import healthRoutes from "./routes/healthRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import itemRoutes from "./routes/itemRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 
+// Import middleware
 import notFound from "./middleware/notFound.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
-
-// Test route
-app.get("/test-route", (req, res) => {
-    res.send("Express server is working");
-});
 
 // Security
 app.use(helmet());
@@ -35,11 +32,27 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Basic test route
+app.get("/test-route", (req, res) => {
+    res.status(200).send("Express server is working");
+});
+
 // API Routes
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/items", itemRoutes);
+
+// Public booking test route
+// IMPORTANT: This must come before bookingRoutes.
+app.get("/api/bookings/test", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Booking routes are working"
+    });
+});
+
+// Protected booking routes
 app.use("/api/bookings", bookingRoutes);
 
 // 404 handler
