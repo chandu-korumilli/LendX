@@ -1,8 +1,13 @@
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { registerUser } from "../services/authService";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function Register() {
+    const navigate = useNavigate();
+    const { login } = useAuth();
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -10,7 +15,6 @@ function Register() {
     });
 
     const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
 
     // Handle input changes
@@ -26,15 +30,24 @@ function Register() {
         e.preventDefault();
 
         setError("");
-        setSuccess("");
         setLoading(true);
 
         try {
-            await registerUser(form);
+            const response = await registerUser(form);
+            const token =
+                response.data?.token ||
+                response.token ||
+                response.accessToken;
+            const user =
+                response.data?.user ||
+                response.user;
 
-            setSuccess(
-                "Registration successful! Please login to continue."
-            );
+            if (!token || !user) {
+                throw new Error("Registration response is missing account details");
+            }
+
+            login(user, token);
+            navigate("/", { replace: true });
 
             setForm({
                 name: "",
@@ -62,12 +75,6 @@ function Register() {
                 {error && (
                     <p className="error-message">
                         {error}
-                    </p>
-                )}
-
-                {success && (
-                    <p className="success-message">
-                        {success}
                     </p>
                 )}
 
@@ -104,7 +111,7 @@ function Register() {
                     value={form.password}
                     onChange={handleChange}
                     required
-                    minLength={6}
+                    minLength={8}
                 />
 
                 <button type="submit" disabled={loading}>
@@ -113,8 +120,7 @@ function Register() {
 
                 <p>
                     Already registered?{" "}
-                    <a href="/login">Login</a>
-                </p>
+<Link to="/login">Login</Link>                </p>
 
             </form>
 

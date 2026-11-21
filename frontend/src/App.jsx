@@ -1,5 +1,11 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate
+} from "react-router-dom";
+
+import { AuthProvider } from "./context/AuthContext.jsx";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -18,26 +24,29 @@ import "./App.css";
 function App() {
   return (
     <BrowserRouter>
-      <div className="app">
-        <Navbar />
+      <AuthProvider>
+        <div className="app">
+          <Navbar />
 
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/explore" element={<Explore />} />
-            <Route path="/items/:id" element={<ItemDetails />} />
-            <Route path="/add-item" element={<AddItem />} />
-            <Route path="/profile" element={<Profile />} />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/explore" element={<Explore />} />
+              <Route path="/items/:id" element={<ItemDetails />} />
+              <Route path="/add-item" element={<AddItem />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/bookings" element={<MyBookings />} />
 
-            {/* My Bookings */}
-            <Route path="/bookings" element={<MyBookings />} />
-          </Routes>
-        </main>
+              {/* Redirect unknown URLs to Home */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
 
-        <Footer />
-      </div>
+          <Footer />
+        </div>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

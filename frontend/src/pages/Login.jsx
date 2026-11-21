@@ -1,5 +1,7 @@
 
-import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import {
     loginUser,
@@ -9,6 +11,8 @@ import {
 import { useAuth } from "../context/AuthContext.jsx";
 
 function Login() {
+  const navigate = useNavigate();
+const location = useLocation();
     const { login } = useAuth();
 
     const [form, setForm] = useState({
@@ -72,8 +76,8 @@ function Login() {
             login(userData, token);
 
             // Navigate to homepage
-            window.location.href = "/";
-
+const destination = location.state?.from || "/";
+navigate(destination, { replace: true });
         } catch (err) {
             setError(err.message || "Login failed. Please try again.");
         } finally {
@@ -124,8 +128,7 @@ function Login() {
 
                 <p>
                     Don't have an account?{" "}
-                    <a href="/register">Register</a>
-                </p>
+<Link to="/register">Register</Link>                </p>
 
             </form>
 

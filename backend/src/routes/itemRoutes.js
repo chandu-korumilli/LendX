@@ -10,6 +10,8 @@ import {
 } from "../controllers/itemController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
+import { validateQuery } from "../middleware/validate.js";
+import { itemSearchSchema } from "../validators/itemValidator.js";
 
 const router = express.Router();
 
@@ -17,7 +19,7 @@ const router = express.Router();
 router.post("/", protect, createItem);
 
 // Get all active items (with optional filters)
-router.get("/", getAllItems);
+router.get("/", validateQuery(itemSearchSchema), getAllItems);
 
 // Get a single item by ID
 router.get("/:id", getItemById);

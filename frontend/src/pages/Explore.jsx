@@ -1,16 +1,19 @@
 
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { getItems } from "../services/itemService";
 import ItemCard from "../components/ItemCard";
 
 function Explore() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const category = searchParams.get("category") || "";
+
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
-  async function loadItems(searchValue = search, categoryValue = category) {
+  const loadItems = useCallback(async (searchValue, categoryValue) => {
     setLoading(true);
     setError("");
 
@@ -29,11 +32,50 @@ function Explore() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
-    loadItems("", "");
-  }, []);
+    let active = true;
+
+    async function fetchCategoryItems() {
+      try {
+        const response = await getItems("", category);
+        const itemList =
+          response?.data?.items ||
+          response?.items ||
+          [];
+
+        if (active) {
+          setItems(itemList);
+        }
+      } catch (err) {
+        if (active) {
+          setError(err.message || "Unable to load items");
+          setItems([]);
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchCategoryItems();
+
+    return () => {
+      active = false;
+    };
+  }, [category]);
+
+  function handleCategoryChange(event) {
+    setLoading(true);
+    setError("");
+    const selectedCategory = event.target.value;
+    setSearchParams(
+      selectedCategory ? { category: selectedCategory } : {},
+      { replace: true }
+    );
+  }
 
   function handleSearch(event) {
     event.preventDefault();
@@ -42,8 +84,13 @@ function Explore() {
 
   function handleReset() {
     setSearch("");
-    setCategory("");
-    loadItems("", "");
+    setLoading(true);
+    setError("");
+    if (!category) {
+      loadItems("", "");
+    } else {
+      setSearchParams({}, { replace: true });
+    }
   }
 
   return (
@@ -72,7 +119,7 @@ function Explore() {
 
         <select
           value={category}
-          onChange={(event) => setCategory(event.target.value)}
+          onChange={handleCategoryChange}
         >
           <option value="">All Categories</option>
           <option value="Electronics">Electronics</option>
